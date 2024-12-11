@@ -1,0 +1,82 @@
+﻿@model MVC_Project.Areas.LOC_City.Models.LOC_CityModel
+
+<form asp-action="Save" asp-controller="LOC_City" asp-area="LOC_City" method="post">
+    <fieldset>
+        <b> <legend>City ADD/Edit</legend></b>
+        <div class="mb-3">
+            <label for="disabledTextInput" class="form-label"><span style="color:red">*</span>CityName</label>
+            <input type="text" class="form-control" asp-for="CityName" placeholder="City Name">
+            <span asp-validation-for="CityName" style="color:red"></span>
+        </div>
+
+        <div class="mb-3">
+            <label for="disabledTextInput" class="form-label"><span style="color:red">*</span>CityCode</label>
+            <input type="text" class="form-control" asp-for="Citycode" placeholder="City Code">
+            <span asp-validation-for="Citycode" style="color:red"></span>
+        </div>
+        <div class="mb-3">
+            <label for="disabledTextInput" class="form-label"><span style="color:red">*</span>CountryID</label>
+            <select id="CountryID" class="form-control" asp-for="CountryID"
+                    asp-items="@(new SelectList(ViewBag.CountryList,"CountryID","CountryName"))" onchange="fnOnCountryChange()">
+
+                <option disabled selected>Select Country</option>
+            </select>
+            <span asp-validation-for="CountryID" style="color:red"></span>
+        </div>
+        <div class="mb-3">
+            <label for="disabledTextInput" class="form-label"><span style="color:red">*</span>StateID</label>
+            <select id="StateID" class="form-control" asp-for="StateID"
+                    asp-items="@(new SelectList(ViewBag.StateList,"StateID","StateName"))">
+
+                <option disabled selected>Select State</option>
+            </select>
+            <span asp-validation-for="StateID" style="color:red"></span>
+        </div>
+
+
+        <input type="hidden" class=" form-control" asp-for="CityID">
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button class="btn btn-danger">Cancel</button>
+    </fieldset>
+</form>
+
+
+
+
+@section Scripts{
+    <script>
+        function fnOnCountryChange() {
+            var CountryID = $("#CountryID").val();
+            if (CountryID != "") {
+                $("#StateID").empty();
+                $("#StateID").append($("<option></option>").val("").html("Select State"));
+                $.ajax(
+                    {
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "@Url.Action("SelectStateByCountry", "LOC_City")" + "?&CountryID=" + CountryID,
+                        data: {},
+                        dataType: "json",
+                        success: function (Result) {
+                            $.each(Result,
+                                function (key, value) {
+
+                                    $("#StateID").append($("<option></option>").val(value.stateID).html(value.stateName));
+                                });
+                        },
+                        error: function (err) {
+                            console.log(err);
+                            alert("Error while loading combobox.");
+                        }
+                    });
+            } else {
+                $("#StateID").empty();
+                $("#StateID").append($("<option></option>").val("").html("Select State"));
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+ }

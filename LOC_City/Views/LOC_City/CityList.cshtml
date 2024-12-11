@@ -1,0 +1,101 @@
+﻿@using System.Data;
+@{
+    Layout = "_Layout";
+}
+@model List<MVC_Project.Areas.LOC_City.Models.LOC_CityModel>
+
+@*@model DataTable*@
+
+<form asp-area="LOC_City" asp-controller="LOC_City">
+    <input type="text" name="CityName" placeholder="CityName" />
+    <input type="text" name="CityCode" placeholder="CityCode" />
+    <input type="text" name="CountryName" placeholder="CountryName" />
+    <input type="text" name="StateName" placeholder="StateName" />
+    <button type="submit" asp-action="Filtter">Filtter</button>
+    <a class="btn btn-danger" asp-controller="LOC_City" asp-action="Clear">Clear</a>
+</form>
+</br>
+
+<div>
+    <a type="button" class="btn btn-success" asp-area="LOC_City" asp-action="City_AddEdit" asp-controller="LOC_City">Add new City</a>
+    <a type="button" class="btn btn-success" asp-area="LOC_City" asp-action="EXPORT_XML" asp-controller="LOC_City">Generate Excel</a>
+</div>
+<br />
+
+
+<form asp-action="MultipleDelete" method="post">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th scope="col">CityName</th>
+                <th scope="col">CityCode</th>
+                <th scope="col">CountryName</th>
+                <th scope="col">StateName</th>
+                <th scope="col">CreationDate</th>
+                <th scope="col">ModifyDate</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+
+            @for (var i = 0; i < Model.Count; i++)
+            {
+                <tr>
+                    <td class="text-center">
+                        <input type="checkbox" asp-for="@Model[i].IsSelected" />
+                        <input type="hidden" asp-for="@Model[i].CityID"   />
+                    </td>
+                    <td>@Model[i].CityName</td>
+                    <td>@Model[i].Citycode</td>
+                    <td>@Model[i].CountryName</td>
+                    <td>@Model[i].StateName</td>
+                    <td>@Convert.ToDateTime(Model[i].CreationDate).ToString("dd-MM-yyyy")</td>
+                    <td>@Convert.ToDateTime(Model[i].Modified).ToString("dd-MM-yyyy")</td>
+                    <td>
+                        <form method="post" asp-controller="LOC_City" asp-action="Delete" asp-area="LOC_City">
+                            <input type="hidden" name="CityId" value="@Model[i].CityID">
+                            <button type="submit" class="btn btn-danger btn-xs"
+                                    onclick="return fun1();">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <a asp-controller="LOC_City" asp-action="City_AddEdit" asp-area="LOC_City" asp-route-CityID="@Model[i].CityID">
+                            <button type="submit" class="btn btn-primary">
+                                Edit
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <button class="btn btn-danger mb-2" type="submit">Delete Selected</button>
+    </table>
+</form>
+
+
+
+@section Scripts
+    {
+    @*@{*@
+    <script>
+        function fun1() {
+
+
+            if (confirm("are you sure to delete this record??")) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+
+    </script>
+    @*await Html.RenderPartialAsync("_ValidationScriptsPartial");*@
+
+    @*}*@
+
+}

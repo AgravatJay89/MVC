@@ -1,0 +1,215 @@
+USE [21010101006]
+
+ALTER PROCEDURE [dbo].[PR_State_DeleteBYPK]
+	@StateID int
+AS
+DELETE
+FROM [dbo].[LOC_State]
+WHERE [dbo].[LOC_State].[StateID] = @StateID
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+
+ALTER PROCEDURE [dbo].[PR_State_Dropdown]
+@CountryID int
+AS
+BEGIN
+SELECT [dbo].[LOC_State].[StateID],
+	   [dbo].[LOC_State].[StateName]
+FROM [dbo].[LOC_State]
+WHERE [dbo].[LOC_State].[CountryID] = @CountryID
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+
+ALTER PROCEDURE [dbo].[PR_State_Insert]
+
+	@CountryID		int,
+	@StateName		varchar(100),
+	@StateCode		varchar(50)
+	
+	
+AS
+
+INSERT INTO [dbo].[LOC_State]
+(
+		[CountryID],
+		[StateName],
+		[StateCode]
+		
+)
+VALUES 
+(	
+	@CountryID,
+	@StateName,
+	@StateCode
+)	 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+ALTER procedure [dbo].[PR_State_SelectAll]
+@StateName varchar(100) = Null,
+@StateCode varchar(100) = Null,
+@CountryName varchar(100) = Null
+AS
+
+SELECT  [dbo].[LOC_State].[StateCode],
+		[dbo].[LOC_State].[CountryID],
+		[dbo].[LOC_State].[StateName],
+		[dbo].[LOC_Country].[CountryName],
+		[dbo].[LOC_State].[Modified],
+		[dbo].[LOC_State].[Created],
+		[dbo].[LOC_State].[StateID]
+From [dbo].[LOC_State]
+inner join  [dbo].[LOC_Country]
+ON [dbo].[LOC_Country].[CountryID] = [dbo].[LOC_State].[CountryID]
+
+Where (@StateName is null OR StateName Like ('%'+@StateName+'%'))
+And	  (@StateCode is null OR StateCode Like ('%'+@StateCode+'%'))
+And	  (@CountryName is null OR StateCode Like ('%'+@CountryName+'%'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+ALTER PROCEDURE [dbo].[PR_State_SelectByPK]
+@StateID int
+AS
+
+select [dbo].[LOC_State].[StateID],
+	   [dbo].[LOC_State].[StateName],
+	   [dbo].[LOC_State].[CountryID],
+	   [dbo].[LOC_Country].[CountryName],
+	   [dbo].[LOC_State].[StateCode]
+	from [dbo].[LOC_State]
+
+	INNER JOIN	[dbo].[LOC_Country]
+	ON [dbo].[LOC_Country].[CountryID] = [dbo].[LOC_State].[CountryID]
+
+WHERE [dbo].[LOC_State].[StateID] = @StateID
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+
+ALTER PROCEDURE [dbo].[PR_State_UpdateByPK]
+
+	@StateID		int,
+	@StateName		varchar(100),
+	@CountryID		int,
+	@StateCode		varchar(50)
+
+AS
+
+UPDATE [dbo].[LOC_State]
+
+	SET [StateName]	=	@StateName,
+		[CountryID]	=	@CountryID,
+		[StateCode]	=	@StateCode
+
+	WHERE [dbo].[LOC_State].[StateID] = @StateID
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+USE [21010101006]
+ALTER PROCEDURE [dbo].[PR_StateSelectByCountry]
+@CountryID int
+as
+SELECT StateID,StateName FROM LOC_STATE
+WHERE CountryID = @CountryID
+
